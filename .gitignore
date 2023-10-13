@@ -2,6 +2,7 @@
 **/migrations/*.py
 **/migrations/*.pyc
 **/migrations/__pycache__/
+!**/migrations/__init__.py
 /db.sqlite3
 /env
 /media
