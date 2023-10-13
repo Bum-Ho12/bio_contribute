@@ -120,6 +120,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 MEDIA_URL = "media/"
+# for production
 MEDIA_ROOT= '/home/BioContribute/bio_contribute/media'
 STATIC_ROOT = "/home/BioContribute/bio_contribute/static/"
 
