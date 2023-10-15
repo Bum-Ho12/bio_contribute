@@ -12,6 +12,9 @@ class AccountSerializer(serializers.ModelSerializer):
             'password': {'write_only':True},
             'token': {
                 'required': False
+            },
+            'first_name':{
+                'required':True
             }
         }
         def save(self,validated_data):
