@@ -77,6 +77,19 @@ def login_account(request):
         data['error'] = 'Please register to gain access!'
         return Response(data=data,status = status.HTTP_401_UNAUTHORIZED)
 
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_user(request):
+    try:
+        account         = Account.objects.get(token = get_token(request))
+    except:
+        response = {'error': 'Unable to get user!'}
+        return Response(data= response,status=status.HTTP_401_UNAUTHORIZED)
+    sr = AccountSerializer(account)
+    data = sr.data
+    data['username'] = account.first_name + ' ' + account.last_name
+    return Response(data= data,status=status.HTTP_200_OK)
+
 @api_view(['PUT'])
 @permission_classes([AllowAny])
 @parser_classes([MultiPartParser,FormParser])
