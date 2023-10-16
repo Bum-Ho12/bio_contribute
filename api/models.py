@@ -20,6 +20,8 @@ class Specimen(models.Model):
     image       = models.ImageField(upload_to='uploads/')
     author      = models.ForeignKey(Account,on_delete=models.CASCADE)
     description = models.CharField(max_length=3000)
+    longitude   = models.DecimalField(max_digits=7,decimal_places= 4,blank=True,null=True)
+    latitude    = models.DecimalField(max_digits=7,decimal_places= 4,blank=True, null=True)
     created_at  = models.DateTimeField(auto_now_add=True)
     # updated_at  = models.DateTimeField(blank=True)
 

@@ -27,15 +27,21 @@ def all_specimen(request):
 def register_account(request):
     if request.method == 'POST':
         serialized              = AccountSerializer(data=request.data)
+        username                = request.data.get('username')
+        first_name, last_name   = username.split(' ') if ' ' in username else(username, '')
         data                    = {}
         if serialized.is_valid():
             account             = serialized.save()
             AuthToken.objects.create(user=account)
             obj                 = Account.objects.get(email_address = account.email_address)
             obj.token           = AuthToken.objects.get(user=obj).key
+            obj.first_name,obj.last_name = first_name,last_name
             obj.save()
             sr                  = AccountSerializer(obj)
-            return Response(data= sr.data,status=status.HTTP_201_CREATED)
+            data = sr.data
+            username            = obj.first_name + ' ' + obj.last_name
+            data['username']    = username
+            return Response(data= data,status=status.HTTP_201_CREATED)
         else:
             data                = serialized.errors
             return Response(data, status=status.HTTP_501_NOT_IMPLEMENTED)
@@ -60,14 +66,16 @@ def login_account(request):
             user_token          = AuthToken.objects.create(user=user)
             user.token          = user_token.key
             user.save()
-        data                    = {'token':user_token.key}
+        data                    = {}
+        data['token']           = user.token
         data['email_address']   = user.email_address
-        data['first_name']      = user.first_name
-        data['last_name']       = user.last_name
+        data['username']        = user.first_name + ' '+ user.last_name
         data['phone_number']    = user.phone_number
         return Response(data=data,status=status.HTTP_202_ACCEPTED)
     except:
-        return Response(status.HTTP_204_NO_CONTENT)
+        data = {}
+        data['error'] = 'Please register to gain access!'
+        return Response(data=data,status = status.HTTP_401_UNAUTHORIZED)
 
 @api_view(['PUT'])
 @permission_classes([AllowAny])
