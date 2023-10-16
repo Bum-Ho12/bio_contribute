@@ -5,7 +5,7 @@ from .token_getter import get_token
 from .models import Account, Specimen
 from .auth_validity import is_authenticated
 from rest_framework.response import Response
-from rest_framework.parsers import MultiPartParser,FormParser
+from rest_framework.parsers import MultiPartParser,FormParser,JSONParser
 from .serializers import AccountSerializer,SpecimenSerializer
 from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework.decorators import api_view,permission_classes,parser_classes
@@ -23,7 +23,7 @@ def all_specimen(request):
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
-@parser_classes([MultiPartParser,FormParser])
+@parser_classes([MultiPartParser,FormParser,JSONParser])
 def register_account(request):
     if request.method == 'POST':
         serialized              = AccountSerializer(data=request.data)
@@ -51,7 +51,7 @@ def register_account(request):
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
-@parser_classes([MultiPartParser,FormParser])
+@parser_classes([MultiPartParser,FormParser,JSONParser])
 def login_account(request):
     try:
         email                   = request.data['email_address']
@@ -141,7 +141,7 @@ def logout_account(request):
 
 
 @api_view(['POST'])
-@parser_classes([MultiPartParser,FormParser])
+@parser_classes([MultiPartParser,FormParser,JSONParser])
 def create_specimen(request):
     if is_authenticated(request):
         sp_sr               = SpecimenSerializer(data = request.data)
@@ -168,7 +168,7 @@ def create_specimen(request):
 
 @api_view(['PUT'])
 @permission_classes([AllowAny])
-@parser_classes([FormParser,MultiPartParser])
+@parser_classes([FormParser,MultiPartParser,JSONParser])
 def update_specimen(request):
     if is_authenticated(request):
         try:
@@ -207,7 +207,7 @@ def update_specimen(request):
 
 @api_view(['DELETE'])
 @permission_classes([AllowAny])
-@parser_classes([MultiPartParser,FormParser])
+@parser_classes([MultiPartParser,FormParser,JSONParser])
 def delete_specimen(request):
     if is_authenticated(request):
         specimen    = Specimen.objects.get(id = request.data.get('id'))
