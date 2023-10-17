@@ -165,6 +165,7 @@ def create_specimen(request):
         data                ={}
         data['error']       = 'Not authenticated or invalid user!'
         return Response(data = data,status=status.HTTP_401_UNAUTHORIZED)
+    return Response(data=sp_sr.errors,status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['PUT'])
 @permission_classes([AllowAny])
