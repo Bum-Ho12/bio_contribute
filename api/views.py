@@ -191,7 +191,7 @@ def update_specimen(request):
                 context['image'] = obj.image.url
                 return Response(data = context, status=status.HTTP_201_CREATED)
             else:
-                data = {'error': 'error updating object'}
+                data = {'error': sp_sr.errors}
                 return Response(data=data, status=status.HTTP_409_CONFLICT)
         else:
             if sp_sr.is_valid():
