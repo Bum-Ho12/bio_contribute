@@ -140,6 +140,21 @@ def logout_account(request):
     )
 
 
+@api_view(['DELETE'])
+@permission_classes([AllowAny])
+@parser_classes([MultiPartParser,FormParser,JSONParser])
+def delete_user(request):
+    try:
+        account         = Account.objects.get(token=get_token(request))
+    except:
+        response        = {'error': 'wrong credentials'}
+        return Response(data=response, status=status.HTTP_401_UNAUTHORIZED)
+    token               = AuthToken.objects.get(user = account)
+    token.delete()
+    account.delete()
+    data                = {'success': 'Successfully deleted account '+ account.first_name + ' ' + account.last_name}
+    return Response(data=data, status= status.HTTP_200_OK)
+
 @api_view(['POST'])
 @parser_classes([MultiPartParser,FormParser,JSONParser])
 def create_specimen(request):
