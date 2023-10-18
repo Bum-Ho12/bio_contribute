@@ -53,6 +53,9 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'bio_contribute.urls'
+REST_FRAMEWORK = {
+    'COERCE_DECIMAL_TO_STRING': False,
+}
 
 TEMPLATES = [
     {
