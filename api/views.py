@@ -199,7 +199,7 @@ def update_specimen(request):
                 context = sp_sr.data
                 return Response(data=context,status=status.HTTP_200_OK)
             else:
-                data = {'error': 'error updating object'}
+                data = {'error': sp_sr.errors}
                 return Response(data=data, status=status.HTTP_409_CONFLICT)
     else:
         data = {'error':'invalid token used'}
