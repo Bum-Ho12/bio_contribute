@@ -1,13 +1,14 @@
-import datetime
+# pylint: disable=E1101
+
 from .tokenizer import AuthToken # class that is used to generate Tokens
 from rest_framework import status
 from .token_getter import get_token
-from .models import Account, Specimen
+from .models import Account, Specimen, Comment
 from .auth_validity import is_authenticated
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser,FormParser,JSONParser
-from .serializers import AccountSerializer,SpecimenSerializer
-from rest_framework.permissions import IsAuthenticated,AllowAny
+from .serializers import AccountSerializer,SpecimenSerializer, CommentSerializer
+from rest_framework.permissions import AllowAny
 from rest_framework.decorators import api_view,permission_classes,parser_classes
 
 # Create your views here.
@@ -233,3 +234,31 @@ def delete_specimen(request):
     data = {'error':'invalid token provided!'}
     return Response(data=data,status=status.HTTP_401_UNAUTHORIZED)
 
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+@parser_classes([MultiPartParser,FormParser,JSONParser])
+def create_comment(request):
+    if is_authenticated(request):
+        ct_sr   = CommentSerializer(data=request.data)
+        if ct_sr.is_valid():
+            writer = Account.objects.get(token = get_token(request))
+            specimen = Specimen.objects.get(id = request.data.get('specimen_id'))
+            ct_sr.save(user = writer, specimen = specimen)
+            return Response(data= ct_sr.data,status=status.HTTP_201_CREATED)
+    else:
+        data= {}
+        data['error'] = 'Invalid user/ Unauthenticated!'
+        return Response(data = data,status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['DELETE'])
+@permission_classes([AllowAny])
+@parser_classes([MultiPartParser,FormParser,JSONParser])
+def delete_comment(request):
+    if is_authenticated(request):
+        comment = Comment.objects.get(id = request.data.get('id'))
+        comment.delete()
+        data = {'success': 'Comment deleted Successfully!'}
+        return Response(data=data, status=status.HTTP_200_OK)
+    data = {'error': 'invalid token provided!'}
+    return Response(data=data, status=status.HTTP_401_UNAUTHORIZED)

@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 
 # Create your models here.
@@ -14,7 +15,6 @@ class Account(models.Model):
     def __str__(self) -> str:
         return f"{self.email_address}"
 
-
 class Specimen(models.Model):
     name        = models.CharField(max_length=250)
     image       = models.ImageField(upload_to='uploads/')
@@ -30,3 +30,15 @@ class Specimen(models.Model):
 
     def __str__(self) -> str:
         return f"{self.name}"
+
+class Comment(models.Model):
+    id          = models.UUIDField(primary_key=True, default=uuid.uuid4,editable=False)
+    specimen    = models.ForeignKey(Specimen,on_delete=models.CASCADE)
+    user        = models.ForeignKey(Account,on_delete=models.CASCADE)
+    comment     = models.CharField(max_length= 400)
+
+    class Meta:
+        verbose_name_plural = 'Comments'
+
+    def __str__(self) -> str:
+        return f"{self.comment}"

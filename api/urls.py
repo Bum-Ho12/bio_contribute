@@ -13,5 +13,7 @@ urlpatterns = [
     path('delete_user/',views.delete_user,name='delete_user'),
     path('create/',views.create_specimen, name='create'),
     path('update/',views.update_specimen,name='update'),
-    path('delete/',views.delete_specimen,name='delete')
+    path('delete/',views.delete_specimen,name='delete'),
+    path('create_comment/',views.create_comment,name = 'create_comment'),
+    path('delete_comment/',views.delete_comment, name='delete_comment')
 ]
